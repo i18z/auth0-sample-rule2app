@@ -34,7 +34,6 @@ AUTH0_AUDIENCE = env.get(constants.AUTH0_AUDIENCE)
 if AUTH0_AUDIENCE is '':
     AUTH0_AUDIENCE = AUTH0_BASE_URL + '/userinfo'
 
-
 app = Flask(__name__, static_url_path='/public', static_folder='./public')
 app.secret_key = constants.SECRET_KEY
 app.debug = True
@@ -57,7 +56,7 @@ auth0 = oauth.register(
     access_token_url=AUTH0_BASE_URL + '/oauth/token',
     authorize_url=AUTH0_BASE_URL + '/authorize',
     client_kwargs={
-        'scope': 'openid profile email abc',
+        'scope': 'openid profile email',
     },
 )
 
@@ -73,31 +72,31 @@ def requires_auth(f):
 
 ####>BEGIN<### Added for rule2app
 
-def requires_auth_by_whitelist(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if constants.PROFILE_KEY not in session:
-            return redirect('/login')
-        user_email = session[constants.PROFILE_KEY]['email']
+# def requires_auth_by_whitelist(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         if constants.PROFILE_KEY not in session:
+#             return redirect('/login')
+#         user_email = session[constants.PROFILE_KEY]['email']
 
-        # Authorize user access to lists rules by whitelist. whitelist is defined in whitelist.py
-        if user_email not in whitelist:
-            return render_template('dashboard.html',
-                           userinfo=session[constants.PROFILE_KEY],
-                           info_pretty='You are not authorized to use this function.')
-        return f(*args, **kwargs)
+#         # Authorize user access to lists rules by whitelist. whitelist is defined in whitelist.py
+#         if user_email not in whitelist:
+#             return render_template('dashboard.html',
+#                            userinfo=session[constants.PROFILE_KEY],
+#                            info_pretty='You are not authorized to use this function.')
+#         return f(*args, **kwargs)
 
-    return decorated
+#     return decorated
 
 def getAuth0MgtApiToken():
-'''
-Input: N/A. Get client_id, client_secret from .env file.
-Output: String. The Access Token to call Auth0 Management API.
-'''
+    '''
+    Input: N/A. Get client_id, client_secret from .env file.
+    Output: String. The Access Token to call Auth0 Management API.
+    '''
     header = {'content-type': 'application/json'}
     data = {'grant_type':"client_credentials",
-        'client_id': env.get('M2M_CLIENT_ID'),
-        'client_secret': env.get('M2M_CLIENT_SECRET'),
+        'client_id': env.get(constants.AUTH0_CLIENT_ID),
+        'client_secret': env.get(constants.AUTH0_CLIENT_SECRET),
         'audience': AUTH0_BASE_URL + '/api/v2/'}
 
     req_token = requests.post(AUTH0_BASE_URL + '/oauth/token', headers=header, json=data)
@@ -105,26 +104,26 @@ Output: String. The Access Token to call Auth0 Management API.
     return token["access_token"]
 
 def getAllRules(token):
-'''
-Input: String. The Access Token to call Auth0 Management API.
-Output: JSON Object. All the rules (https://auth0.com/docs/api/management/v2/#!/Rules/get_rules).
-'''
+    '''
+    Input: String. The Access Token to call Auth0 Management API.
+    Output: JSON Object. All the rules (https://auth0.com/docs/api/management/v2/#!/Rules/get_rules).
+    '''
     header = {'Authorization': 'Bearer ' + token}
     req_rules = requests.get('https://quickstart.au.auth0.com/api/v2/rules', headers=header)
     rules = req_rules.json()
     return rules
 
 def mapRuleToApp(jscode):
-'''
-Input: String. Snippet of javascript code of a Auth0 rule.
-Output: String. The Auth0 application that the input js code applies to.
-Assumptions:
-    1) A rule is always applied to one application, with the following code:
-        if (context.clientName === 'TheAppToCheckAccessTo') {...
-    2) The 'TheAppToCheckAccessTo' part of the first match is returned as the application name
-    3) The application name is allowed to have letters, numbers, understore and space
-    4) If no match are found, "unknown" is returned
-'''
+    '''
+    Input: String. Snippet of javascript code of a Auth0 rule.
+    Output: String. The Auth0 application that the input js code applies to.
+    Assumptions:
+        1) A rule is always applied to one application, with the following code:
+            if (context.clientName === 'TheAppToCheckAccessTo') {...
+        2) The 'TheAppToCheckAccessTo' part of the first match is returned as the application name
+        3) The application name is allowed to have letters, numbers, understore and space
+        4) If no match are found, "unknown" is returned
+    '''
     pattern = r'if\s?\(context\.clientName\s?===\s?([a-zA-Z0-9_ \'\"]+)\)\s?{'
     g = re.search(pattern, jscode, re.MULTILINE)
     if g:
@@ -142,7 +141,12 @@ def home():
 
 @app.route('/callback')
 def callback_handling():
-    auth0.authorize_access_token()
+    try:
+        access_token = auth0.authorize_access_token()
+    except KeyError:
+        session.clear()
+        return render_template('home.html',
+                error='You are not authorized to use this demo app.')
     resp = auth0.get('userinfo')
     userinfo = resp.json()
 
@@ -150,7 +154,8 @@ def callback_handling():
     session[constants.PROFILE_KEY] = {
         'user_id': userinfo['sub'],
         'name': userinfo['name'],
-        'email': userinfo['email']
+        'email': userinfo['email'],
+        'access_token': access_token
     }
     return redirect('/dashboard')
 
@@ -176,7 +181,7 @@ def dashboard():
 
 ####>BEGIN<### Added for rule2app
 @app.route('/rules')
-@requires_auth_by_whitelist
+@requires_auth
 def rules():
     rule2app_titles = ['rule', 'enabled', 'application']
     rule2app = []

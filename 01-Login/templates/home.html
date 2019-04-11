@@ -14,7 +14,12 @@
                 <img src="https://i.cloudup.com/StzWWrY34s.png" />
                 <h3>Auth0 Example</h3>
                 <p>Zero friction identity infrastructure, built for developers</p>
+                {% if error is defined %}
+                <p class="bg-danger">{{ error }}</p>
+                <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/logout">Logout</a>
+                {% else %}
                 <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>
+                {% endif %}
               </div>
             </div>
         </div>
