@@ -11,10 +11,11 @@ To run the sample, make sure you have `python` and `pip` installed.
 1. Login [Auth0](https://auth0.com) with your account, create a new Application, with the name of `demo_app`, and type of `Regular Web Applications`.
 2. In the Application's `Settings`, register `http://localhost:3000/callback` as `Allowed Callback URLs` and `http://localhost:3000` as `Allowed Logout URLs`.
 
-## Creating Auth0 Rules
+## Creating Auth0 Rules for whitelist
 
 1. Login [Auth0](https://auth0.com) with your account, create a new Rule, with the name of `demo_rule`, and select the `empty rule` template.
 2. Copy the script in `auth0_rule.js` file to the rule's script, and replace `NameOfTheAppWithWhiteList` with `demo_app`.
+3. Add the email address you want to whitelist in the `whitelist` array.
 
 ## Setup the Python web server
 
