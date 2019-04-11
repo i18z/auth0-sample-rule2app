@@ -10,6 +10,7 @@ To run the sample, make sure you have `python` and `pip` installed.
 
 1. Login [Auth0](https://auth0.com) with your account, create a new Application, with the name of `demo_app`, and type of `Regular Web Applications`.
 2. In the Application's `Settings`, register `http://localhost:3000/callback` as `Allowed Callback URLs` and `http://localhost:3000` as `Allowed Logout URLs`.
+3. Go to the `APIs`, select the `Auth0 Management API`, in the `Machine to Machine Application` settings, enable the newly created application `demo_app`, and select the scope `read:rules`.
 
 ## Creating Auth0 Rules for whitelist
 
