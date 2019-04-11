@@ -7,7 +7,7 @@ function (user, context, callback) {
   
     // only enforce for NameOfTheAppWithWhiteList
     // bypass this rule for all other apps
-    if(context.clientName === 'sample_rule2app'){
+    if(context.clientName === 'NameOfTheAppWithWhiteList'){
       const whitelist = [ 'user1@example.com', 'user2@example.com']; // authorized users
       const userHasAccess = whitelist.some(function (email) {
         return email === user.email;
