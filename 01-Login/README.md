@@ -1,31 +1,28 @@
 # Auth0 Python Web App Sample
 
-This sample demonstrates how to add authentication to a Python web app using Auth0.
+This sample demonstrates how to add authentication to a Python web app using Auth0, and all the Auth0 Managemenet API to list rules and map them to the application they apply to.
 
 # Running the App
 
 To run the sample, make sure you have `python` and `pip` installed.
 
-Rename `.env.example` to `.env` and populate it with the client ID, domain, secret, callback URL and audience for your
-Auth0 app. If you are not implementing any API you can use `https://YOUR_DOMAIN.auth0.com/userinfo` as the audience. 
-Also, add the callback URL to the settings section of your Auth0 client.
+## Creating Auth0 Application
 
-Register `http://localhost:3000/callback` as `Allowed Callback URLs` and `http://localhost:3000` 
-as `Allowed Logout URLs` in your client settings.
+1. Login [Auth0](https://auth0.com) with your account, create a new Application, with the name of `demo_app`, and type of `Regular Web Applications`.
+2. In the Application's `Settings`, register `http://localhost:3000/callback` as `Allowed Callback URLs` and `http://localhost:3000` as `Allowed Logout URLs`.
 
-Run `pip install -r requirements.txt` to install the dependencies and run `python server.py`. 
-The app will be served at [http://localhost:3000/](http://localhost:3000/).
+## Creating Auth0 Rules
 
-# Running the App with Docker
+1. Login [Auth0](https://auth0.com) with your account, create a new Rule, with the name of `demo_rule`, and select the `empty rule` template.
+2. Copy the script in `auth0_rule.js` file to the rule's script, and replace `NameOfTheAppWithWhiteList` with `demo_app`.
 
-To run the sample, make sure you have `docker` installed.
+## Setup the Python web server
 
-To run the sample with [Docker](https://www.docker.com/), make sure you have `docker` installed.
+1. Clone the repository to your local machine.
+2. Rename `.env.example` to `.env` and populate it with the client ID, domain, secret, callback URL and leave audience blank.
+3. Run `pip install -r requirements.txt` to install the dependencies and run `python server.py`. 
+4. The app will be served at [http://localhost:3000/](http://localhost:3000/).
 
-Rename the .env.example file to .env, change the environment variables, and register the URLs as explained [previously](#running-the-app).
-
-Run `sh exec.sh` to build and run the docker image in Linux or run `.\exec.ps1` to build 
-and run the docker image on Windows.
 
 ## What is Auth0?
 
@@ -59,3 +56,4 @@ The [Responsible Disclosure Program](https://auth0.com/whitehat) details the pro
 ## License
 
 This project is licensed under the MIT license. See the [LICENSE](LICENCE) file for more info.
+
