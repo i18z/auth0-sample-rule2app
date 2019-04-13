@@ -25,6 +25,20 @@ To run the sample, make sure you have `python` and `pip` installed.
 3. Run `pip install -r requirements.txt` to install the dependencies and run `python server.py`. 
 4. The app will be served at [http://localhost:3000/](http://localhost:3000/).
 
+## Launch the App
+
+1. Launch the web browser, and navigate to [http://localhost:3000/](http://localhost:3000/).
+2. The `Login` page is displayed:
+![Login Page](https://github.com/i18z/auth0-sample-rule2app/blob/master/01-Login/img/login_page.png)
+
+3. Click `Login` and input username/password. If the user is not in the whilelist:
+![User not authorised](https://github.com/i18z/auth0-sample-rule2app/blob/master/01-Login/img/no_privillege.png)
+
+4. If the user is in whitelist, the dashboard is displayed:
+![Dashboard](https://github.com/i18z/auth0-sample-rule2app/blob/master/01-Login/img/dashboard.png)
+
+4. Click `Rules`, the rules and their applied applications are displayed:
+![Rules](https://github.com/i18z/auth0-sample-rule2app/blob/master/01-Login/img/rules.png)
 
 ## What is Auth0?
 
