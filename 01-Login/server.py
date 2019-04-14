@@ -109,7 +109,7 @@ def getAllRules(token):
     Output: JSON Object. All the rules (https://auth0.com/docs/api/management/v2/#!/Rules/get_rules).
     '''
     header = {'Authorization': 'Bearer ' + token}
-    req_rules = requests.get('https://quickstart.au.auth0.com/api/v2/rules', headers=header)
+    req_rules = requests.get(AUTH0_BASE_URL + '/api/v2/rules', headers=header)
     rules = req_rules.json()
     return rules
 
